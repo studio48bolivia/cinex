@@ -22,6 +22,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
+    title: 'CineXpress — El cine inacabado se convierte en nuevo cine',
+    description: 'Plataforma de cultura abierta y remix cinematográfico iberoamericano.',
     images: ['/og-image.jpg'],
   },
 }
