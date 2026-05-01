@@ -19,7 +19,7 @@ export default async function PerfilPage() {
 
           <div className="bg-white/5 border border-white/10 p-6 mb-6">
             <p className="text-xs text-white/40 mb-1">Email</p>
-            <p className="text-sm text-white">{user.email}</p>
+            <p className="text-sm text-white">{user.email ?? 'Email no disponible'}</p>
           </div>
 
           <Link href="/admin/nuevo"

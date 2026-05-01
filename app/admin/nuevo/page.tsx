@@ -27,6 +27,7 @@ export default function NuevoMaterialPage() {
       setError('Error al guardar el material. Inténtalo de nuevo.')
       setLoading(false)
     } else {
+      setLoading(false)
       router.push('/archivo')
     }
   }
