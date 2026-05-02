@@ -1,3 +1,4 @@
+'use client'
 import Link from 'next/link'
 const CornerTicks=({color='rgba(244,241,235,0.5)'}:{color?:string})=>(<>
   <span style={{position:'absolute',top:0,left:0,width:12,height:12,borderTop:`1px solid ${color}`,borderLeft:`1px solid ${color}`}}/>

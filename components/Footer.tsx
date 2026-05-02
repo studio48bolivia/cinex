@@ -1,3 +1,4 @@
+'use client'
 import Link from 'next/link'
 const Logo=()=>(<Link href="/" style={{display:'flex',alignItems:'center',gap:8,textDecoration:'none'}}>
   <span style={{position:'relative',display:'inline-flex',alignItems:'center',justifyContent:'center',width:28,height:28}}>
