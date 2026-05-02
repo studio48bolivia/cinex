@@ -2,7 +2,35 @@
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
-export default function Hero() {
+interface HeroProps {
+  videoUrl?: string
+  title?: string
+  subtitle?: string
+  supertitle?: string
+  cta1Label?: string
+  cta1Href?: string
+  cta2Label?: string
+  cta2Href?: string
+}
+
+function VideoBackground({ url }: { url: string }) {
+  const isYouTube = url.includes('youtube.com') || url.includes('youtu.be')
+  const isVimeo = url.includes('vimeo.com')
+  if (isYouTube) {
+    const id = url.match(/(?:v=|youtu\.be\/)([^&?/]+)/)?.[1]
+    return <iframe src={`https://www.youtube.com/embed/${id}?autoplay=1&mute=1&loop=1&playlist=${id}&controls=0&showinfo=0`} allow="autoplay" style={{position:'absolute',inset:0,width:'100%',height:'100%',border:'none',objectFit:'cover'}} />
+  }
+  if (isVimeo) {
+    const id = url.match(/vimeo\.com\/(\d+)/)?.[1]
+    return <iframe src={`https://player.vimeo.com/video/${id}?autoplay=1&muted=1&loop=1&background=1`} allow="autoplay" style={{position:'absolute',inset:0,width:'100%',height:'100%',border:'none',objectFit:'cover'}} />
+  }
+  return <video src={url} autoPlay muted loop playsInline style={{position:'absolute',inset:0,width:'100%',height:'100%',objectFit:'cover'}} />
+}
+
+export default function Hero({
+  videoUrl, title, subtitle, supertitle,
+  cta1Label, cta1Href, cta2Label, cta2Href,
+}: HeroProps) {
   const [time,setTime]=useState('')
   useEffect(()=>{
     const tick=()=>{const d=new Date();setTime(`${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}:${String(d.getSeconds()).padStart(2,'0')}`)}
@@ -11,7 +39,7 @@ export default function Hero() {
   return (
     <section id="top" style={{position:'relative',background:'#1A1A1A',color:'#F4F1EB',overflow:'hidden'}}>
       <div style={{position:'absolute',inset:0}}>
-        <div className="placeholder-stripes" style={{position:'absolute',inset:0,opacity:0.9}}/>
+        {videoUrl ? <VideoBackground url={videoUrl} /> : <div className="placeholder-stripes" style={{position:'absolute',inset:0,opacity:0.9}}/>}
         <div style={{position:'absolute',inset:0}}>
           <div style={{position:'absolute',left:0,top:0,height:'100%',width:'42%',background:'linear-gradient(to right,rgba(0,0,0,0.8),transparent)'}}/>
           <div style={{position:'absolute',right:0,top:0,height:'100%',width:'40%',background:'linear-gradient(to left,rgba(0,0,0,0.7),transparent)'}}/>
@@ -40,15 +68,21 @@ export default function Hero() {
           <span style={{width:8,height:8,background:'#6B5CE7',display:'inline-block'}}/><span style={{width:8,height:8,background:'#0F6E56',display:'inline-block'}}/><span style={{width:8,height:8,background:'#D85A30',display:'inline-block'}}/><span style={{width:8,height:8,background:'#BA7517',display:'inline-block'}}/>
         </div>
         <h1 className="display" style={{fontSize:'clamp(44px,8vw,128px)',margin:0,lineHeight:0.92}}>
-          <span style={{display:'block'}}>El cine inacabado</span>
-          <span style={{display:'block'}}>se convierte en</span>
-          <span style={{display:'block',fontStyle:'italic',fontWeight:200}}>nuevo cine<span className="blink" style={{display:'inline-block',marginLeft:12,width:12,height:'0.78em',background:'#F4F1EB',verticalAlign:'baseline'}}/></span>
+          {title ? (
+            <span style={{display:'block'}}>{title}</span>
+          ) : (<>
+            <span style={{display:'block'}}>El cine inacabado</span>
+            <span style={{display:'block'}}>se convierte en</span>
+            <span style={{display:'block',fontStyle:'italic',fontWeight:200}}>nuevo cine<span className="blink" style={{display:'inline-block',marginLeft:12,width:12,height:'0.78em',background:'#F4F1EB',verticalAlign:'baseline'}}/></span>
+          </>)}
         </h1>
         <div className="mt-14 grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
-          <p className="md:col-span-5" style={{fontSize:18,lineHeight:1.65,color:'rgba(244,241,235,0.8)',maxWidth:'44ch',margin:0}}>CineXpress es un ecosistema donde proyectos abandonados, descartes y material de archivo se transforman en nuevas obras. Un laboratorio de remontaje colectivo para Iberoamérica.</p>
+          <p className="md:col-span-5" style={{fontSize:18,lineHeight:1.65,color:'rgba(244,241,235,0.8)',maxWidth:'44ch',margin:0}}>
+            {subtitle ?? 'CineXpress es un ecosistema donde proyectos abandonados, descartes y material de archivo se transforman en nuevas obras. Un laboratorio de remontaje colectivo para Iberoamérica.'}
+          </p>
           <div className="md:col-span-4 md:col-start-7 flex flex-col gap-3">
-            <Link href="/archivo" style={{padding:'0 20px',height:48,display:'inline-flex',alignItems:'center',justifyContent:'space-between',gap:16,background:'#F4F1EB',color:'#1A1A1A',fontWeight:500,fontSize:14,textDecoration:'none'}} onMouseEnter={e=>e.currentTarget.style.background='#fff'} onMouseLeave={e=>e.currentTarget.style.background='#F4F1EB'}><span>Explorar el archivo</span><span>→</span></Link>
-            <Link href="/archivo#donar" style={{padding:'0 20px',height:48,display:'inline-flex',alignItems:'center',justifyContent:'space-between',gap:16,border:'1px solid rgba(244,241,235,0.4)',color:'#F4F1EB',fontSize:14,textDecoration:'none'}} onMouseEnter={e=>{e.currentTarget.style.borderColor='#F4F1EB';e.currentTarget.style.background='rgba(244,241,235,0.05)'}} onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(244,241,235,0.4)';e.currentTarget.style.background='transparent'}}><span>Donar material</span><span>+</span></Link>
+            <Link href={cta1Href ?? '/archivo'} style={{padding:'0 20px',height:48,display:'inline-flex',alignItems:'center',justifyContent:'space-between',gap:16,background:'#F4F1EB',color:'#1A1A1A',fontWeight:500,fontSize:14,textDecoration:'none'}} onMouseEnter={e=>e.currentTarget.style.background='#fff'} onMouseLeave={e=>e.currentTarget.style.background='#F4F1EB'}><span>{cta1Label ?? 'Explorar el archivo'}</span><span>→</span></Link>
+            <Link href={cta2Href ?? '/archivo#donar'} style={{padding:'0 20px',height:48,display:'inline-flex',alignItems:'center',justifyContent:'space-between',gap:16,border:'1px solid rgba(244,241,235,0.4)',color:'#F4F1EB',fontSize:14,textDecoration:'none'}} onMouseEnter={e=>{e.currentTarget.style.borderColor='#F4F1EB';e.currentTarget.style.background='rgba(244,241,235,0.05)'}} onMouseLeave={e=>{e.currentTarget.style.borderColor='rgba(244,241,235,0.4)';e.currentTarget.style.background='transparent'}}><span>{cta2Label ?? 'Donar material'}</span><span>+</span></Link>
           </div>
           <div className="md:col-span-3 md:col-start-10 flex md:justify-end">
             <div style={{display:'flex',gap:32}}>
